@@ -1,30 +1,25 @@
 sudo: required
 language: python
 services:
-  - docker
+- docker
 python:
-  - "3.6"
+- '3.6'
 before_script:
-  - docker-compose build
+- docker-compose build
 script:
-  - docker-compose run --rm web bash -c "flake8 . &&
-                                         python wait_for_postgres.py &&
-                                         ./manage.py test"
-
+- docker-compose run --rm web bash -c "flake8 . && python wait_for_postgres.py &&
+  ./manage.py test"
 after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker login --username=_ --password="$HEROKU_AUTH_TOKEN" registry.heroku.com;
-    docker tag web registry.heroku.com/control-prod/web;
-    docker push registry.heroku.com/control-prod/web;
-    fi
-  - if [ "$TRAVIS_BRANCH" == "qa" ]; then
-    docker login --username=_ --password="$HEROKU_AUTH_TOKEN" registry.heroku.com;
-    docker tag web registry.heroku.com/control-qa/web;
-    docker push registry.heroku.com/control-qa/web;
-    fi
-
+- if [ "$TRAVIS_BRANCH" == "master" ]; then docker login --username=_ --password="$HEROKU_AUTH_TOKEN"
+  registry.heroku.com; docker tag web registry.heroku.com/control-prod/web; docker
+  push registry.heroku.com/control-prod/web; fi
+- if [ "$TRAVIS_BRANCH" == "qa" ]; then docker login --username=_ --password="$HEROKU_AUTH_TOKEN"
+  registry.heroku.com; docker tag web registry.heroku.com/control-qa/web; docker push
+  registry.heroku.com/control-qa/web; fi
 notifications:
   email: false
-
 cache:
   pip: true
+env:
+  global:
+    secure: kbwly1szWi6xAw31mxTUst+4FnTpelCNEeZ4ttKgXD5kOm14blf4Kc2thGrjUkFYGwuL4ggajRBfsnmQEx7cmMtVzrju/9YKYd6HHOIuGVRqdmsYmYkTsuiQKPMiEoqEdH0jiPEEwadCmHsMGYRawzSdOh0EbpbVIUmMu6cHEyMCuC25XZA+Mkiowl8AoX+KuhjYF/KNK5JDjFjbFX3RcNxOoEcrGj3zaNrOYcLuiITwf6CigHZ1nLEuZ/AU72+FEuJPgTLt2JvsmySjEFOgEcK4hqFusTJOmQoofcxxJyHmbvBRv6WhwqrTsskJ4FZ3KvkAXezrgz+cr7lHscxpd8cbZ5IeqfhdX6PwQJ+4P1Je/HbYirmaPeboRAQ7vs3IzQTAWyp1EPd2Oqr38XUvh7ZSXCdx5/3gUBAVqf3lDEbaImn/QahJamxTnlp6lXcAT0zZYHwOnPScDFVFRonUt31N+OvNPDSWNWXEzs6jMhUcKhhC51PwovX8aj8mOfarB68ZUYZWMZm1PkBXL1IVDpWmCRfP6VmCWkK8XD3AduY500F/4FFoYZuuy8UU3oS5lbJqCyDE+nPppyTHH6wB8hzguao+VNy+hA3+AmzrUNLp1biKoJ8nncniXtB2bInaEa+K0OwLiaSkfhLTGvuWD2SYKZcCev+Blv31xMgMZ1I=
